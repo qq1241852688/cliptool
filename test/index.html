@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script src="../dist/main.umd.js"></script>
+
+<style>
+    .box {
+        width: 400px;
+        height: 400px;
+        border: 1px solid #000;
+        background-color: rgb(36, 64, 135);
+        position: relative;
+    }
+</style>
+
+<body>
+    <div class="box" id="box">
+        asddasdasdsadsaasddasdasdsadsaasddasdasdsadsaasddasdasdsadsa
+        asddasdasdsadsaasddasdasdsadsaasddasdasdsadsaasddasdasdsadsa</div>
+    <button id="showBtn">show</button>
+    <button id="closeBtn">close</button>
+    <button id="btn">getClipData</button>
+    <button id="styleBtn">styleBtn</button>
+    <button id="themeBtn">themeBtn</button>
+
+
+
+
+
+
+    <script>
+        window.onload = function () {
+
+            let box = new clipTool.Clip(document.getElementById("box"));
+            console.log(box.getClipData())
+            document.getElementById("btn").addEventListener("click", function () {
+                console.log(box.getClipData())
+            }, false);
+            document.getElementById("showBtn").addEventListener("click", function () {
+                box.show()
+            }, false);
+            document.getElementById("closeBtn").addEventListener("click", function () {
+                // box.hide()
+                box.destroy();
+
+            }, false)
+            document.getElementById("styleBtn").addEventListener("click", function () {
+                // box.hide()
+                box.setStyle({
+                    width: "400px",
+                    height: "400px",
+                    left: "10px",
+                    top: "20px",
+
+                });
+
+            }, false)
+            document.getElementById("themeBtn").addEventListener("click", function () {
+                // box.setTheme({
+                //     color: "pink",
+                //     border: "2px solid black",
+                //     type: "rect"
+
+                // });
+                box.setTheme();
+
+            }, false)
+        }
+
+
+    </script>
+</body>
+
+</html>
