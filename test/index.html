@@ -28,6 +28,8 @@
     <button id="btn">getClipData</button>
     <button id="styleBtn">styleBtn</button>
     <button id="themeBtn">themeBtn</button>
+    <button id="ratioBtn">setRatio</button>
+
 
 
 
@@ -71,6 +73,34 @@
                 box.setTheme();
 
             }, false)
+
+            
+
+
+            document.getElementById("ratioBtn").addEventListener("click", function () {
+               
+                box.setRatio("9:16");
+                // box.setRatio("16:9");
+                box.setRatio("1:1");
+
+
+
+            }, false)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         }
 
 
