@@ -29,6 +29,8 @@
     <button id="styleBtn">styleBtn</button>
     <button id="themeBtn">themeBtn</button>
     <button id="ratioBtn">setRatio</button>
+    <input type="text" id="ratioValue" value="16:9">
+
 
 
 
@@ -75,13 +77,12 @@
             }, false)
 
             
-
-
+            
             document.getElementById("ratioBtn").addEventListener("click", function () {
-               
-                box.setRatio("9:16");
-                // box.setRatio("16:9");
-                box.setRatio("1:1");
+ let ratioValue=document.getElementById("ratioValue").value;
+
+               console.log(ratioValue)
+                box.setRatio(ratioValue);
 
 
 

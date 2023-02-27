@@ -23,6 +23,9 @@ class SelectedFrame {
       transform: "translate(-50%, -50%)",
       id: "_left_top",
       cursor: "nw-resize",
+      width: 10,
+      height: 10,
+      borderRadius: "50%",
       cb: function (obj) {
         let changeW = obj.originW - obj.moveX;
         let changeH = obj.originH - obj.moveY;
@@ -92,14 +95,48 @@ class SelectedFrame {
       transform: "translate(-50%, -50%)",
       id: "_center_top",
       cursor: "n-resize",
+      width: 20,
+      height: 10,
+      borderRadius: "15px",
       cb: function (obj) {
-        obj.originW - obj.moveX;
+        let changeW = null;
         let changeH = obj.originH - obj.moveY;
-        obj.originLeft + obj.moveX;
+        let changeLeft = null;
         let changeTop = obj.originTop + obj.moveY;
         let minTop = obj.originTop + obj.originH - minWH;
         let maxHeight = data.y + data.height;
-        if (self.data.ratio !== "free") ; else {
+        let maxWidth = data.x < data.boxWidth - (data.x + data.width) ? data.x * 2 + data.width : data.width + (data.boxWidth - (data.x + data.width)) * 2;
+        if (self.data.ratio !== "free") {
+          let ratio = self.data.ratio.split(":");
+          let wr = ratio[0];
+          let hr = ratio[1];
+          //边界处理
+          if (changeH <= minWH) {
+            changeH = minWH;
+            // changeLeft = minLeft;
+            changeTop = minTop;
+          }
+          if (changeTop <= 0) {
+            changeTop = 0;
+            changeH = maxHeight;
+          }
+          changeW = changeH * wr / hr;
+          changeLeft = obj.originLeft + (obj.originH - changeH) * wr / hr / 2;
+          if (changeW >= maxWidth) {
+            changeW = maxWidth;
+            changeH = changeW * hr / wr;
+            changeTop = obj.originTop + (obj.originW - changeW) * hr / wr;
+            changeLeft = obj.originLeft + (obj.originH - changeH) * wr / hr / 2;
+          }
+          ele.style.width = changeW + "px";
+          ele.style.height = changeH + "px";
+          ele.style.left = changeLeft + "px";
+          ele.style.top = changeTop + "px";
+          data.width = changeW;
+          data.height = changeH;
+          data.x = changeLeft;
+          data.y = changeTop;
+        } else {
           if (changeH <= minWH) {
             changeH = minWH;
             changeTop = minTop;
@@ -121,6 +158,9 @@ class SelectedFrame {
       transform: "translate(50%, -50%)",
       id: "_right_top",
       cursor: "ne-resize",
+      width: 10,
+      height: 10,
+      borderRadius: "50%",
       cb: function (obj) {
         let changeW = obj.originW + obj.moveX;
         let changeH = obj.originH - obj.moveY;
@@ -176,24 +216,60 @@ class SelectedFrame {
       transform: "translate(-50%, -50%)",
       id: "_left_center",
       cursor: "e-resize",
+      width: 10,
+      height: 20,
+      borderRadius: "15px",
       cb: function (obj) {
         let changeW = obj.originW - obj.moveX;
+        let changeH = null;
         let changeLeft = obj.originLeft + obj.moveX;
+        let changeTop = null;
         let minLeft = obj.originLeft + obj.originW - minWH;
         let maxWidth = data.x + data.width;
-        if (changeW <= minWH) {
-          changeW = minWH;
-          changeLeft = minLeft;
+        let maxHeight = data.y < data.boxHeight - (data.y + data.height) ? data.y * 2 + data.height : data.height + (data.boxHeight - (data.y + data.height)) * 2;
+        if (self.data.ratio !== "free") {
+          let ratio = self.data.ratio.split(":");
+          let wr = ratio[0];
+          let hr = ratio[1];
+          //边界处理
+          if (changeW <= minWH) {
+            changeW = minWH;
+            changeLeft = minLeft;
+          }
+          if (changeLeft < 0) {
+            changeW = maxWidth;
+            changeLeft = 0;
+          }
+          changeH = changeW * hr / wr;
+          changeTop = obj.originTop + (obj.originW - changeW) * hr / wr / 2;
+          if (changeH >= maxHeight) {
+            changeH = maxHeight;
+            changeW = changeH * wr / hr;
+            changeTop = obj.originTop + (obj.originW - changeW) * hr / wr / 2;
+            changeLeft = obj.originLeft + (obj.originH - changeH) * wr / hr;
+          }
+          ele.style.width = changeW + "px";
+          ele.style.height = changeH + "px";
+          ele.style.left = changeLeft + "px";
+          ele.style.top = changeTop + "px";
+          data.width = changeW;
+          data.height = changeH;
+          data.x = changeLeft;
+          data.y = changeTop;
+        } else {
+          if (changeW <= minWH) {
+            changeW = minWH;
+            changeLeft = minLeft;
+          }
+          if (changeLeft <= 0) {
+            changeLeft = 0;
+            changeW = maxWidth;
+          }
+          ele.style.width = changeW + "px";
+          ele.style.left = changeLeft + "px";
+          data.width = changeW;
+          data.x = changeLeft;
         }
-        if (changeLeft <= 0) {
-          changeLeft = 0;
-          changeW = maxWidth;
-        }
-        ele.style.width = changeW + "px";
-        ele.style.left = changeLeft + "px";
-        data.width = changeW;
-        data.x = changeLeft;
-        data.width = changeW;
       }
     }, {
       //右中
@@ -202,14 +278,46 @@ class SelectedFrame {
       transform: "translate(50%, -50%)",
       id: "_right_center",
       cursor: "e-resize",
+      width: 10,
+      height: 20,
+      borderRadius: "15px",
       cb: function (obj) {
         let changeW = obj.originW + obj.moveX;
+        let changeH = null;
+        let changeTop = null;
         let maxWidth = data.boxWidth - data.x;
-        if (changeW <= minWH) {
-          changeW = minWH;
-        }
-        if (changeW >= maxWidth) {
-          changeW = maxWidth;
+        let maxHeight = data.y < data.boxHeight - (data.y + data.height) ? data.y * 2 + data.height : data.height + (data.boxHeight - (data.y + data.height)) * 2;
+        if (self.data.ratio !== "free") {
+          let ratio = self.data.ratio.split(":");
+          let wr = ratio[0];
+          let hr = ratio[1];
+          //边界处理
+          if (changeW <= minWH) {
+            changeW = minWH;
+          }
+          if (changeW >= maxWidth) {
+            changeW = maxWidth;
+          }
+          changeH = changeW * hr / wr;
+          changeTop = obj.originTop + (obj.originW - changeW) * hr / wr / 2;
+          if (changeH >= maxHeight) {
+            changeH = maxHeight;
+            changeW = changeH * wr / hr;
+            changeTop = obj.originTop + (obj.originW - changeW) * hr / wr / 2;
+          }
+          ele.style.width = changeW + "px";
+          ele.style.height = changeH + "px";
+          ele.style.top = changeTop + "px";
+          data.width = changeW;
+          data.height = changeH;
+          data.y = changeTop;
+        } else {
+          if (changeW <= minWH) {
+            changeW = minWH;
+          }
+          if (changeW >= maxWidth) {
+            changeW = maxWidth;
+          }
         }
         ele.style.width = changeW + "px";
         data.width = changeW;
@@ -221,6 +329,9 @@ class SelectedFrame {
       transform: "translate(-50%, 50%)",
       id: "_left_bottom",
       cursor: "ne-resize",
+      width: 10,
+      height: 10,
+      borderRadius: "50%",
       cb: function (obj) {
         let changeW = obj.originW - obj.moveX;
         let changeH = obj.originH + obj.moveY;
@@ -242,6 +353,11 @@ class SelectedFrame {
             changeW = maxWidth;
           }
           changeH = changeW * hr / wr;
+          if (changeH >= maxHeight) {
+            changeH = maxHeight;
+            changeW = changeH * wr / hr;
+            changeLeft = obj.originLeft + (obj.originH - changeH) * wr / hr;
+          }
         } else {
           //边界处理
           if (changeW <= minWH) {
@@ -273,14 +389,46 @@ class SelectedFrame {
       transform: "translate(-50%, 50%)",
       id: "_center_bottom",
       cursor: "n-resize",
+      width: 25,
+      height: 10,
+      borderRadius: "15px",
       cb: function (obj) {
         let changeH = obj.originH + obj.moveY;
+        let changeW = null;
+        let changeLeft = null;
         let maxHeight = data.boxHeight - data.y;
-        if (changeH <= minWH) {
-          changeH = minWH;
-        }
-        if (changeH >= maxHeight) {
-          changeH = maxHeight;
+        let maxWidth = data.x < data.boxWidth - (data.x + data.width) ? data.x * 2 + data.width : data.width + (data.boxWidth - (data.x + data.width)) * 2;
+        if (self.data.ratio !== "free") {
+          let ratio = self.data.ratio.split(":");
+          let wr = ratio[0];
+          let hr = ratio[1];
+          //边界处理
+          if (changeH <= minWH) {
+            changeH = minWH;
+          }
+          if (changeH >= maxHeight) {
+            changeH = maxHeight;
+          }
+          changeW = changeH * wr / hr;
+          changeLeft = obj.originLeft + (obj.originH - changeH) * wr / hr / 2;
+          if (changeW >= maxWidth) {
+            changeW = maxWidth;
+            changeH = changeW * hr / wr;
+            changeLeft = obj.originLeft + (obj.originH - changeH) * wr / hr / 2;
+          }
+          ele.style.width = changeW + "px";
+          ele.style.height = changeH + "px";
+          ele.style.left = changeLeft + "px";
+          data.width = changeW;
+          data.height = changeH;
+          data.x = changeLeft;
+        } else {
+          if (changeH <= minWH) {
+            changeH = minWH;
+          }
+          if (changeH >= maxHeight) {
+            changeH = maxHeight;
+          }
         }
         ele.style.height = changeH + "px";
         data.height = changeH;
@@ -292,6 +440,9 @@ class SelectedFrame {
       transform: "translate(50%, 50%)",
       id: "_right_bottom",
       cursor: "nw-resize",
+      width: 10,
+      height: 10,
+      borderRadius: "50%",
       cb: function (obj) {
         let changeW = obj.originW + obj.moveX;
         let changeH = obj.originH + obj.moveY;
@@ -309,6 +460,10 @@ class SelectedFrame {
             changeW = maxWidth;
           }
           changeH = changeW * hr / wr;
+          if (changeH >= maxHeight) {
+            changeH = maxHeight;
+            changeW = changeH * wr / hr;
+          }
         } else {
           //边界处理
           if (changeW <= minWH) {
@@ -333,9 +488,10 @@ class SelectedFrame {
     for (let i = 0; i < 8; i++) {
       let item = document.createElement("div");
       item.style.position = "absolute";
-      item.style.width = "10px";
-      item.style.height = "10px";
-      item.style.backgroundColor = "red";
+      item.style.width = frameData[i].width + "px";
+      item.style.height = frameData[i].height + "px";
+      item.style.borderRadius = frameData[i].borderRadius;
+      item.style.backgroundColor = "white";
       item.style.cursor = frameData[i].cursor;
       item.setAttribute("id", frameData[i].id);
       if (frameData[i].top !== undefined) item.style.top = frameData[i].top;
@@ -421,23 +577,21 @@ class SelectedFrame {
   setSize(size) {
     let map = {
       "mini": {
-        width: 5,
-        height: 5
+        scale: "scale(1)"
       },
       "small": {
-        width: 10,
-        height: 10
+        scale: "scale(1.4)"
       },
       "medium": {
-        width: 15,
-        height: 15
+        scale: "scale(1.8)"
       }
     };
-    let w = map[size] && map[size].width || 10;
-    let h = map[size] && map[size].height || 10;
+    let scale = map[size] && map[size].scale || 1;
+    console.log(scale);
     this.frames.forEach(item => {
-      item.style.width = w + "px";
-      item.style.height = h + "px";
+      let transform = item.style.transform;
+      let matchT = item.style.transform.match(/scale.*?\)$/);
+      item.style.transform = matchT ? transform.replace(matchT[0], scale) : transform + "" + scale;
     });
   }
 }
