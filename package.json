@@ -1,7 +1,7 @@
 {
-  "name": "cliptool",
+  "name": "cliptool_hl",
   "version": "1.0.0",
-  "description": "this is a canvas lib",
+  "description": "this is a cliptool",
   "main": "./dist/main.umd.js",
   "scripts": {
     "doc": "jsdoc dist/main.es.js&&node server.js",

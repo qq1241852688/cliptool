@@ -607,15 +607,16 @@ class Clip {
     ratio: "free"
   }) {
     this.ele = ele; //父元素
-
-    this.params = params; //裁剪信息
+    this.clipParams = params; //裁剪信息
     this.clipBox = null; //裁剪盒子
     this.maskBox = null; //遮罩
     this.rectElement = null; //裁剪区域
     this.selectedFrame = null; //缩放按钮
-    this.createDom(params);
+    if (this.clipParams.width > this.clipParams.boxWidth) this.clipParams.width = this.clipParams.boxWidth;
+    if (this.clipParams.height > this.clipParams.boxHeight) this.clipParams.height = this.clipParams.boxHeight;
+    this.init(this.clipParams);
   }
-  createDom(clipObject) {
+  init(clipObject = this.clipParams) {
     this.clipBox = document.createElement("div");
     this.clipBox.id = "_clipBox";
     this.clipBox.style.position = "absolute";
@@ -629,17 +630,22 @@ class Clip {
     this.createRect(clipObject);
     this.renderAll(clipObject);
   }
-  renderAll(clipObject = this.params) {
+  renderAll(clipObject = this.clipParams) {
     // console.log(clipObject)
-    let clipBoxObject = {};
-    clipBoxObject.width = clipObject.width;
-    clipBoxObject.height = clipObject.height;
-    clipBoxObject.topBorder = clipObject.y;
-    clipBoxObject.rightBorder = clipObject.boxWidth - clipObject.x - clipObject.width;
-    clipBoxObject.bottomBorder = clipObject.boxHeight - clipObject.y - clipObject.height;
-    clipBoxObject.leftBorder = clipObject.x;
+    if (clipObject.width > clipObject.boxWidth) clipObject.width = clipObject.boxWidth;
+    if (clipObject.height > clipObject.boxHeight) clipObject.height = clipObject.boxHeight;
+    let clipBoxObject = {
+      width: clipObject.width,
+      height: clipObject.height,
+      topBorder: clipObject.y,
+      rightBorder: clipObject.boxWidth - clipObject.x - clipObject.width,
+      bottomBorder: clipObject.boxHeight - clipObject.y - clipObject.height,
+      leftBorder: clipObject.x
+    };
     this.rectElement.style.width = clipObject.width + "px";
     this.rectElement.style.height = clipObject.height + "px";
+    this.rectElement.style.left = clipObject.x;
+    this.rectElement.style.top = clipObject.y;
     this.maskBox.style.width = clipBoxObject.width + "px";
     this.maskBox.style.height = clipBoxObject.height + "px";
     this.maskBox.style.borderWidth = `${clipBoxObject.topBorder}px ${clipBoxObject.rightBorder}px ${clipBoxObject.bottomBorder}px ${clipBoxObject.leftBorder}px `;
@@ -707,15 +713,19 @@ class Clip {
     }
     self.clipBox.appendChild(fragment);
   }
+  changeClipParams(changeObj) {
+    this.clipParams = Object.assign(this.clipParams, changeObj);
+    this.renderAll();
+  }
   setStyle(styleObject) {
     let map = {
       width: v => {
-        this.params.boxWidth = parseFloat(v);
-        this.renderAll(this.params);
+        this.clipParams.boxWidth = parseFloat(v);
+        this.renderAll(this.clipParams);
       },
       height: v => {
-        this.params.boxHeight = parseFloat(v);
-        this.renderAll(this.params);
+        this.clipParams.boxHeight = parseFloat(v);
+        this.renderAll(this.clipParams);
       },
       left: v => {
         this.clipBox.style.left = v;
@@ -736,14 +746,14 @@ class Clip {
       height,
       boxWidth,
       boxHeight
-    } = this.params;
+    } = this.clipParams;
     return {
       x,
       y,
       width,
       height,
-      boxWidth,
-      boxHeight
+      clipContainerWidth: boxWidth,
+      clipContainerHeight: boxHeight
     };
   }
   destroy() {
@@ -794,11 +804,11 @@ class Clip {
     this.selectedFrame.changeStyle(theme);
   }
   setRatio(v) {
-    this.params.ratio = v;
+    this.clipParams.ratio = v;
     let ratio = v.split(":");
     let wr = ratio[0];
     let hr = ratio[1];
-    this.params.height = this.params.width * hr / wr;
+    this.clipParams.height = this.clipParams.width * hr / wr;
     this.renderAll();
   }
 }
