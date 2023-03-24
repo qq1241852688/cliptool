@@ -13,7 +13,7 @@ class SelectedFrame {
         let self = this;
         let frames = [];
         let fragment = document.createDocumentFragment();
-        let minWH = 90;
+        let minWH = 20;
         let frameData = [
             {
                 //左上
@@ -98,7 +98,7 @@ class SelectedFrame {
                     let changeTop = obj.originTop + obj.moveY;
                     let minTop = obj.originTop + obj.originH - minWH;
                     let maxHeight = data.y + data.height;
-                    let maxWidth = data.x < data.boxWidth - (data.x + data.width) ? data.x * 2 + data.width : data.width + (data.boxWidth - (data.x + data.width)) * 2;
+                    let maxWidth = data.x < data.containerWidth - (data.x + data.width) ? data.x * 2 + data.width : data.width + (data.containerWidth - (data.x + data.width)) * 2;
 
                     if (self.data.ratio !== "free") {
                         let ratio = (self.data.ratio).split(":");
@@ -159,7 +159,7 @@ class SelectedFrame {
                     let changeTop = obj.originTop + obj.moveY;
                     let minTop = obj.originTop + obj.originH - minWH;
                     let maxHeight = data.y + data.height;
-                    let maxWidth = data.boxWidth - data.x;
+                    let maxWidth = data.containerWidth - data.x;
 
                     if (self.data.ratio !== "free") {
                         let ratio = (self.data.ratio).split(":");
@@ -177,6 +177,8 @@ class SelectedFrame {
                         if (changeTop <= 0) {
                             changeTop = 0;
                             changeH = maxHeight;
+                            changeW = changeH * wr / hr;
+
                         }
 
                     } else {
@@ -222,7 +224,7 @@ class SelectedFrame {
 
                     let minLeft = obj.originLeft + obj.originW - minWH;
                     let maxWidth = data.x + data.width;
-                    let maxHeight = data.y < data.boxHeight - (data.y + data.height) ? data.y * 2 + data.height : data.height + (data.boxHeight - (data.y + data.height)) * 2;
+                    let maxHeight = data.y < data.containerHeight - (data.y + data.height) ? data.y * 2 + data.height : data.height + (data.containerHeight - (data.y + data.height)) * 2;
                     if (self.data.ratio !== "free") {
                         let ratio = (self.data.ratio).split(":");
                         let wr = ratio[0];
@@ -278,8 +280,8 @@ class SelectedFrame {
                     let changeW = obj.originW + obj.moveX;
                     let changeH = null;
                     let changeTop = null;
-                    let maxWidth = data.boxWidth - data.x;
-                    let maxHeight = data.y < data.boxHeight - (data.y + data.height) ? data.y * 2 + data.height : data.height + (data.boxHeight - (data.y + data.height)) * 2;
+                    let maxWidth = data.containerWidth - data.x;
+                    let maxHeight = data.y < data.containerHeight - (data.y + data.height) ? data.y * 2 + data.height : data.height + (data.containerHeight - (data.y + data.height)) * 2;
                     if (self.data.ratio !== "free") {
                         let ratio = (self.data.ratio).split(":");
                         let wr = ratio[0];
@@ -327,7 +329,7 @@ class SelectedFrame {
                     let changeLeft = obj.originLeft + obj.moveX;
                     let minLeft = obj.originLeft + obj.originW - minWH;
                     let maxWidth = data.x + data.width;
-                    let maxHeight = data.boxHeight - data.y;
+                    let maxHeight = data.containerHeight - data.y;
 
                     if (self.data.ratio !== "free") {
                         let ratio = (self.data.ratio).split(":");
@@ -388,8 +390,8 @@ class SelectedFrame {
                     let changeH = obj.originH + obj.moveY;
                     let changeW = null;
                     let changeLeft=null;
-                    let maxHeight = data.boxHeight - data.y;
-                    let maxWidth = data.x < data.boxWidth - (data.x + data.width) ? data.x * 2 + data.width : data.width + (data.boxWidth - (data.x + data.width)) * 2;
+                    let maxHeight = data.containerHeight - data.y;
+                    let maxWidth = data.x < data.containerWidth - (data.x + data.width) ? data.x * 2 + data.width : data.width + (data.containerWidth - (data.x + data.width)) * 2;
 
                     if (self.data.ratio !== "free") {
                         let ratio = (self.data.ratio).split(":");
@@ -436,8 +438,8 @@ class SelectedFrame {
                 cb: function (obj) {
                     let changeW = obj.originW + obj.moveX;
                     let changeH = obj.originH + obj.moveY;
-                    let maxHeight = data.boxHeight - data.y;
-                    let maxWidth = data.boxWidth - data.x;
+                    let maxHeight = data.containerHeight - data.y;
+                    let maxWidth = data.containerWidth - data.x;
 
                     if (self.data.ratio !== "free") {
                         let ratio = (self.data.ratio).split(":");
@@ -579,7 +581,7 @@ class SelectedFrame {
         }
  
         let scale=(map[size] && map[size].scale) || 1
-        console.log(scale)
+        // console.log(scale)
 
         this.frames.forEach(item => {
 

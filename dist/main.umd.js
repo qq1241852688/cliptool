@@ -17,7 +17,7 @@
         let self = this;
         let frames = [];
         let fragment = document.createDocumentFragment();
-        let minWH = 90;
+        let minWH = 20;
         let frameData = [{
           //左上
           top: 0,
@@ -107,7 +107,7 @@
             let changeTop = obj.originTop + obj.moveY;
             let minTop = obj.originTop + obj.originH - minWH;
             let maxHeight = data.y + data.height;
-            let maxWidth = data.x < data.boxWidth - (data.x + data.width) ? data.x * 2 + data.width : data.width + (data.boxWidth - (data.x + data.width)) * 2;
+            let maxWidth = data.x < data.containerWidth - (data.x + data.width) ? data.x * 2 + data.width : data.width + (data.containerWidth - (data.x + data.width)) * 2;
             if (self.data.ratio !== "free") {
               let ratio = self.data.ratio.split(":");
               let wr = ratio[0];
@@ -169,7 +169,7 @@
             let changeTop = obj.originTop + obj.moveY;
             let minTop = obj.originTop + obj.originH - minWH;
             let maxHeight = data.y + data.height;
-            let maxWidth = data.boxWidth - data.x;
+            let maxWidth = data.containerWidth - data.x;
             if (self.data.ratio !== "free") {
               let ratio = self.data.ratio.split(":");
               let wr = ratio[0];
@@ -186,6 +186,7 @@
               if (changeTop <= 0) {
                 changeTop = 0;
                 changeH = maxHeight;
+                changeW = changeH * wr / hr;
               }
             } else {
               //边界处理
@@ -228,7 +229,7 @@
             let changeTop = null;
             let minLeft = obj.originLeft + obj.originW - minWH;
             let maxWidth = data.x + data.width;
-            let maxHeight = data.y < data.boxHeight - (data.y + data.height) ? data.y * 2 + data.height : data.height + (data.boxHeight - (data.y + data.height)) * 2;
+            let maxHeight = data.y < data.containerHeight - (data.y + data.height) ? data.y * 2 + data.height : data.height + (data.containerHeight - (data.y + data.height)) * 2;
             if (self.data.ratio !== "free") {
               let ratio = self.data.ratio.split(":");
               let wr = ratio[0];
@@ -287,8 +288,8 @@
             let changeW = obj.originW + obj.moveX;
             let changeH = null;
             let changeTop = null;
-            let maxWidth = data.boxWidth - data.x;
-            let maxHeight = data.y < data.boxHeight - (data.y + data.height) ? data.y * 2 + data.height : data.height + (data.boxHeight - (data.y + data.height)) * 2;
+            let maxWidth = data.containerWidth - data.x;
+            let maxHeight = data.y < data.containerHeight - (data.y + data.height) ? data.y * 2 + data.height : data.height + (data.containerHeight - (data.y + data.height)) * 2;
             if (self.data.ratio !== "free") {
               let ratio = self.data.ratio.split(":");
               let wr = ratio[0];
@@ -340,7 +341,7 @@
             let changeLeft = obj.originLeft + obj.moveX;
             let minLeft = obj.originLeft + obj.originW - minWH;
             let maxWidth = data.x + data.width;
-            let maxHeight = data.boxHeight - data.y;
+            let maxHeight = data.containerHeight - data.y;
             if (self.data.ratio !== "free") {
               let ratio = self.data.ratio.split(":");
               let wr = ratio[0];
@@ -398,8 +399,8 @@
             let changeH = obj.originH + obj.moveY;
             let changeW = null;
             let changeLeft = null;
-            let maxHeight = data.boxHeight - data.y;
-            let maxWidth = data.x < data.boxWidth - (data.x + data.width) ? data.x * 2 + data.width : data.width + (data.boxWidth - (data.x + data.width)) * 2;
+            let maxHeight = data.containerHeight - data.y;
+            let maxWidth = data.x < data.containerWidth - (data.x + data.width) ? data.x * 2 + data.width : data.width + (data.containerWidth - (data.x + data.width)) * 2;
             if (self.data.ratio !== "free") {
               let ratio = self.data.ratio.split(":");
               let wr = ratio[0];
@@ -448,8 +449,8 @@
           cb: function (obj) {
             let changeW = obj.originW + obj.moveX;
             let changeH = obj.originH + obj.moveY;
-            let maxHeight = data.boxHeight - data.y;
-            let maxWidth = data.boxWidth - data.x;
+            let maxHeight = data.containerHeight - data.y;
+            let maxWidth = data.containerWidth - data.x;
             if (self.data.ratio !== "free") {
               let ratio = self.data.ratio.split(":");
               let wr = ratio[0];
@@ -589,7 +590,8 @@
           }
         };
         let scale = map[size] && map[size].scale || 1;
-        console.log(scale);
+        // console.log(scale)
+
         this.frames.forEach(item => {
           let transform = item.style.transform;
           let matchT = item.style.transform.match(/scale.*?\)$/);
@@ -604,8 +606,8 @@
         y: 50,
         width: 100,
         height: 100,
-        boxWidth: 300,
-        boxHeight: 300,
+        containerWidth: 300,
+        containerHeight: 300,
         ratio: "free"
       }) {
         this.ele = ele; //父元素
@@ -614,8 +616,8 @@
         this.maskBox = null; //遮罩
         this.rectElement = null; //裁剪区域
         this.selectedFrame = null; //缩放按钮
-        if (this.clipParams.width > this.clipParams.boxWidth) this.clipParams.width = this.clipParams.boxWidth;
-        if (this.clipParams.height > this.clipParams.boxHeight) this.clipParams.height = this.clipParams.boxHeight;
+        if (this.clipParams.width > this.clipParams.containerWidth) this.clipParams.width = this.clipParams.containerWidth;
+        if (this.clipParams.height > this.clipParams.containerHeight) this.clipParams.height = this.clipParams.containerHeight;
         this.init(this.clipParams);
       }
       init(clipObject = this.clipParams) {
@@ -634,20 +636,22 @@
       }
       renderAll(clipObject = this.clipParams) {
         // console.log(clipObject)
-        if (clipObject.width > clipObject.boxWidth) clipObject.width = clipObject.boxWidth;
-        if (clipObject.height > clipObject.boxHeight) clipObject.height = clipObject.boxHeight;
+        if (clipObject.width > clipObject.containerWidth) clipObject.width = clipObject.containerWidth;
+        if (clipObject.height > clipObject.containerHeight) clipObject.height = clipObject.containerHeight;
+        if (clipObject.width + clipObject.x > clipObject.containerWidth) clipObject.x -= clipObject.width + clipObject.x - clipObject.containerWidth;
+        if (clipObject.height + clipObject.y > clipObject.containerHeight) clipObject.y -= clipObject.height + clipObject.y - clipObject.containerHeight;
         let clipBoxObject = {
           width: clipObject.width,
           height: clipObject.height,
           topBorder: clipObject.y,
-          rightBorder: clipObject.boxWidth - clipObject.x - clipObject.width,
-          bottomBorder: clipObject.boxHeight - clipObject.y - clipObject.height,
+          rightBorder: clipObject.containerWidth - clipObject.x - clipObject.width,
+          bottomBorder: clipObject.containerHeight - clipObject.y - clipObject.height,
           leftBorder: clipObject.x
         };
         this.rectElement.style.width = clipObject.width + "px";
         this.rectElement.style.height = clipObject.height + "px";
-        this.rectElement.style.left = clipObject.x;
-        this.rectElement.style.top = clipObject.y;
+        this.rectElement.style.left = clipObject.x + "px";
+        this.rectElement.style.top = clipObject.y + "px";
         this.maskBox.style.width = clipBoxObject.width + "px";
         this.maskBox.style.height = clipBoxObject.height + "px";
         this.maskBox.style.borderWidth = `${clipBoxObject.topBorder}px ${clipBoxObject.rightBorder}px ${clipBoxObject.bottomBorder}px ${clipBoxObject.leftBorder}px `;
@@ -665,6 +669,8 @@
         controlDom.style.boxSizing = "border-box";
         controlDom.style.transformOrigin = "left top";
         controlDom.style.border = "2px solid blue";
+        controlDom.style.cursor = "move";
+
         //缩放按钮
         let selectedFrame = new SelectedFrame(controlDom, clipObject, this);
         this.selectedFrame = selectedFrame;
@@ -686,8 +692,8 @@
             // console.log(moveX, moveY)
             let left = psX + moveX;
             let top = psY + moveY;
-            let maxLeft = clipObject.boxWidth - clipObject.width;
-            let maxTop = clipObject.boxHeight - clipObject.height;
+            let maxLeft = clipObject.containerWidth - clipObject.width;
+            let maxTop = clipObject.containerHeight - clipObject.height;
             //边界处理
             if (left <= 0) {
               left = 0;
@@ -722,11 +728,11 @@
       setStyle(styleObject) {
         let map = {
           width: v => {
-            this.clipParams.boxWidth = parseFloat(v);
+            this.clipParams.containerWidth = parseFloat(v);
             this.renderAll(this.clipParams);
           },
           height: v => {
-            this.clipParams.boxHeight = parseFloat(v);
+            this.clipParams.containerHeight = parseFloat(v);
             this.renderAll(this.clipParams);
           },
           left: v => {
@@ -746,16 +752,16 @@
           y,
           width,
           height,
-          boxWidth,
-          boxHeight
+          containerWidth,
+          containerHeight
         } = this.clipParams;
         return {
           x,
           y,
           width,
           height,
-          clipContainerWidth: boxWidth,
-          clipContainerHeight: boxHeight
+          clipContainerWidth: containerWidth,
+          clipContainerHeight: containerHeight
         };
       }
       destroy() {
@@ -798,10 +804,17 @@
             border: "2px solid black",
             type: "circle",
             size: "small"
+          },
+          "random": {
+            color: ` rgb(${Math.floor(Math.random() * 255)},${Math.floor(Math.random() * 255)},${Math.floor(Math.random() * 255)})`,
+            border: `2px solid rgb(${Math.floor(Math.random() * 255)},${Math.floor(Math.random() * 255)},${Math.floor(Math.random() * 255)})`,
+            type: "circle",
+            size: "small"
           }
         };
         let arr = Object.keys(map);
         theme = theme || map[arr[Math.floor(Math.random() * arr.length)]];
+        // console.log(theme);
         this.rectElement.style.border = theme.border;
         this.selectedFrame.changeStyle(theme);
       }
@@ -811,6 +824,10 @@
         let wr = ratio[0];
         let hr = ratio[1];
         this.clipParams.height = this.clipParams.width * hr / wr;
+        if (this.clipParams.height > this.clipParams.containerHeight) {
+          this.clipParams.height = this.clipParams.containerHeight;
+          this.clipParams.width = this.clipParams.height * wr / hr;
+        }
         this.renderAll();
       }
     }

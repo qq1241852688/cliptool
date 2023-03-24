@@ -31,14 +31,8 @@
     <button id="themeBtn">themeBtn</button>
     <button id="ratioBtn">setRatio</button>
     <button id="clipBtn">clip</button>
-
+    <button id="destroyBtn">sdestroy</button>
     <input type="text" id="ratioValue" value="16:9">
-
-
-
-
-
-
 
 
     <script>
@@ -59,8 +53,8 @@
                     y: 50,
                     width: 100,
                     height: 100,
-                    boxWidth: canvas.width,
-                    boxHeight: canvas.height,
+                    containerWidth: canvas.width,
+                    containerHeight: canvas.height,
                     ratio: "free"
                 });
             }
@@ -71,8 +65,7 @@
                 box.show();
             }, false);
             document.getElementById("closeBtn").addEventListener("click", function () {
-                // box.hide()
-                box.destroy();
+                box.hide();
 
             }, false)
             document.getElementById("styleBtn").addEventListener("click", function () {
@@ -116,16 +109,20 @@
                 ctx.putImageData(clipImage, 0, 0);
                 box.changeClipParams(
                     {
-                        x: 0, y: 0, boxWidth: clipData.width, boxHeight: clipData.height
+                        x: 0, y: 0, containerWidth: clipData.width, containerHeight: clipData.height
                     }
                 );
 
             }, false)
 
 
+            
 
+            document.getElementById("destroyBtn").addEventListener("click", function () {
+         
+                box.destroy();
 
-
+            }, false)
 
 
 
