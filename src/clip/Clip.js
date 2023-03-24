@@ -18,6 +18,7 @@ class Clip {
         if (this.clipParams.width > this.clipParams.containerWidth) this.clipParams.width = this.clipParams.containerWidth;
         if (this.clipParams.height > this.clipParams.containerHeight) this.clipParams.height = this.clipParams.containerHeight;
         this.init(this.clipParams);
+        
 
     }
     init(clipObject = this.clipParams) {
